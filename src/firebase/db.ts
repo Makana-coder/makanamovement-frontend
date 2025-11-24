@@ -1,12 +1,11 @@
-import {db} from './firebaseConfig';
-import {collection,addDoc,getDocs,serverTimestamp} from 'firebase/firestore';
+import {getFirestore, doc, setDoc} from 'firebase/firestore';
+import {app} from './firebaseConfig';
 
-const addMakanaEvent=(data)=>{
-  return addDoc(collection(db,'makanaEvents'),{...data,timestamp:serverTimestamp()});
+const db = getFirestore(app);
+
+export const saveData = async <T>(path: string, data: T): Promise<void> => {
+  const ref = doc(db, path);
+  await setDoc(ref, data);
 };
 
-const getMakanaEvents=()=>{
-  return getDocs(collection(db,'makanaEvents'));
-};
-
-export {addMakanaEvent,getMakanaEvents};
+export {db};

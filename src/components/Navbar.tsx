@@ -1,50 +1,51 @@
-import {useEffect,useState} from 'react';
-import {login,logout,watchUserState} from '../firebase/auth'
+import {useEffect, useState} from 'react';
+import type {User} from 'firebase/auth';
+import {login, logout, watchUserState} from '../firebase/auth';
 
-const Navbar=()=>{
-  const [user,setUser]=useState(null);
-  const [email,setEmail]=useState('');
-  const [password,setPassword]=useState('');
+const Navbar = () => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
-  useEffect(()=>{
-    const unsubscribe=watchUserState((currentUser)=>{
-      setUser(currentUser);
+  useEffect(() => {
+    const unsubscribe = watchUserState((user: User | null) => {
+      setCurrentUser(user);
     });
-    return ()=>unsubscribe();
-  },[]);
+    return () => unsubscribe();
+  }, []);
 
-  const handleLogin=async()=>{
-    try{
-      await login(email,password);
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
       setEmail('');
       setPassword('');
-    }catch(error){
-      console.error('Login failed:',error);
+    } catch (error) {
+      console.error('Login failed:', error);
     }
   };
 
-  const handleLogout=async()=>{
+  const handleLogout = async () => {
     await logout();
   };
 
-  return(
-    <nav style={{display:'flex',justifyContent:'space-between',padding:'10px',alignItems:'center'}}>
+  return (
+    <nav style={{display:'flex', justifyContent:'space-between', padding:'10px', alignItems:'center'}}>
       <h2>Makana Movement</h2>
 
-      {user ? (
-        <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
-          <span>Welcome, {user.email}</span>
+      {currentUser ? (
+        <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
+          <span>Welcome, {currentUser.email}</span>
           <button onClick={handleLogout}>Logout</button>
         </div>
       ) : (
-        <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
-          <input 
+        <div style={{display:'flex', gap:'10px', alignItems:'center'}}>
+          <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e)=>setEmail(e.target.value)}
           />
-          <input 
+          <input
             type="password"
             placeholder="Password"
             value={password}

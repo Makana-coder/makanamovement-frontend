@@ -1,14 +1,13 @@
-import {storage} from './firebaseConfig';
-import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes, deleteObject } from "firebase/storage";
+import { storage } from "./firebaseConfig";
 
-const uploadFile=(file,path)=>{
-  const storageRef=ref(storage,path);
-  return uploadBytes(storageRef,file);
+export const uploadFile = async (file: File, path: string): Promise<string> => {
+  const fileRef = ref(storage, path);
+  await uploadBytes(fileRef, file);
+  return await getDownloadURL(fileRef);
 };
 
-const getFileUrl=(path)=>{
-  const storageRef=ref(storage,path);
-  return getDownloadURL(storageRef);
+export const deleteFile = async (path: string): Promise<void> => {
+  const fileRef = ref(storage, path);
+  await deleteObject(fileRef);
 };
-
-export {uploadFile,getFileUrl};

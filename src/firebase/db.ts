@@ -1,5 +1,5 @@
-import { addDoc, collection, WithFieldValue, DocumentData } from "firebase/firestore";
-import { db } from "./firebaseConfig";
+import { addDoc, collection, getDocs } from 'firebase/firestore';
+import type { WithFieldValue, DocumentData } from 'firebase/firestore';
 
 export const createDocument = async <T extends DocumentData>(
   collectionPath: string,
